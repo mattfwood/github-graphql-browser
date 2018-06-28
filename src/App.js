@@ -104,6 +104,9 @@ class App extends Component {
                         {repo.languages.nodes.map(language => (
                           <Tag color={language.color}>{language.name}</Tag>
                         ))}
+                        {repo.languages.nodes.length === 0 && (
+                          <Tag>No Languages Detected</Tag>
+                        )}
                       </Card>
                     </List.Item>
                   )}
