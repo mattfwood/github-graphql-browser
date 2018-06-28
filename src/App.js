@@ -16,8 +16,6 @@ import {
 const { Header, Content, Footer } = Layout;
 const Search = Input.Search;
 
-const prettyBytes = require('pretty-bytes');
-
 const STARRED_REPOS = gql`
   query repos($username: String!) {
     user(login: $username) {
@@ -43,7 +41,7 @@ const STARRED_REPOS = gql`
 
 class App extends Component {
   state = {
-    username: 'mattfwood',
+    username: 'wesbos',
   };
 
   changeUsername = username => {
@@ -100,7 +98,7 @@ class App extends Component {
                     <List.Item key={repo.id}>
                       <Card title={repo.name.replace(/-/g, ' ')}>
                         <div>{repo.description}</div>
-                        <div>Size: {prettyBytes(repo.diskUsage)}</div>
+                        {/* <div>Size: {prettyBytes(repo.diskUsage)}</div> */}
                         <div>Languages:</div>
                         {repo.languages.nodes.map(language => (
                           <Tag color={language.color}>{language.name}</Tag>
