@@ -6,8 +6,11 @@ import { ApolloProvider } from 'react-apollo';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+
 import registerServiceWorker from './registerServiceWorker';
 import App from './App';
+import RepoPage from './components/RepoPage';
 
 const token = process.env.REACT_APP_GITHUB;
 
@@ -32,7 +35,12 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <App />
+    <Router>
+      <Switch>
+        <Route exact path="/" component={App} />
+        <Route path={`/:owner/:name`} component={RepoPage} />
+      </Switch>
+    </Router>
   </ApolloProvider>,
   document.getElementById('root')
 );

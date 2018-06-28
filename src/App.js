@@ -13,6 +13,8 @@ import {
   Row,
   Col,
 } from 'antd';
+import { Link } from 'react-router-dom';
+
 const { Header, Content, Footer } = Layout;
 const Search = Input.Search;
 
@@ -55,7 +57,7 @@ class App extends Component {
       <Layout className="layout">
         <Header>
           <div className="logo">
-            <div>Github Browser</div>
+            <Link to="/">Github Browser</Link>
           </div>
         </Header>
         <Content style={{ padding: '25px 50px' }}>
@@ -97,17 +99,19 @@ class App extends Component {
                   dataSource={repos}
                   renderItem={repo => (
                     <List.Item key={repo.id}>
+                      <Link to={`/${this.state.username}/${repo.name}`}>
                       <Card title={repo.name.replace(/-/g, ' ')}>
                         <div>{repo.description}</div>
                         {/* <div>Size: {prettyBytes(repo.diskUsage)}</div> */}
                         <div>Languages:</div>
                         {repo.languages.nodes.map(language => (
-                          <Tag color={language.color}>{language.name}</Tag>
+                          <Tag key={language.name} color={language.color}>{language.name}</Tag>
                         ))}
                         {repo.languages.nodes.length === 0 && (
                           <Tag>No Languages Detected</Tag>
                         )}
                       </Card>
+                      </Link>
                     </List.Item>
                   )}
                 />
