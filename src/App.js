@@ -62,6 +62,7 @@ class App extends Component {
           <Row type="flex" justify="center">
             <Col xs={{ span: 12 }} lg={{ span: 6 }}>
               <Search
+                defaultValue="WesBos"
                 placeholder="Github Username"
                 enterButton="Search"
                 size="large"
