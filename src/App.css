@@ -1,0 +1,17 @@
+@import '~antd/dist/antd.css';
+
+.ant-card-head-wrapper {
+  text-transform: capitalize;
+}
+
+.logo {
+  width: 120px;
+  height: 31px;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 16px 24px 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFF;
+}
