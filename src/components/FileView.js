@@ -36,6 +36,7 @@ class FileView extends Component {
 
             return (
               <List
+                bordered
                 itemLayout="horizontal"
                 dataSource={files}
                 renderItem={file => {

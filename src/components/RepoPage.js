@@ -25,6 +25,7 @@ const REPO_DETAILS = gql`
     repository(name: $name, owner: $owner) {
       name
       url
+      description
       object(expression: "master:readme.md") {
         ... on Blob {
           text
@@ -63,7 +64,8 @@ class RepoPage extends Component {
               <Query query={REPO_DETAILS} variables={{ name, owner }}>
                 {({ loading, error, data }) => {
                   if (error) return <p>Error :(</p>;
-                  if (loading) return <p>Loading</p>;
+                  if (loading) return <Card loading={true} />;
+
                   const { repository } = data;
                   console.log(repository);
                   return (
@@ -80,21 +82,41 @@ class RepoPage extends Component {
                         </div>
                       }
                     >
-                      <div>{repository.description}</div>
+                      <Card.Meta
+                        description={
+                          <div>
+                            <div>{repository.description}</div>
+                            <div style={{ marginTop: 10 }}>
+                              {repository.languages.nodes.map(language => (
+                                <Tag key={language.name} color={language.color}>
+                                  {language.name}
+                                </Tag>
+                              ))}
+                            </div>
+                          </div>
+                        }
+                        style={{
+                          marginBottom: 12,
+                          paddingBottom: 12,
+                          // borderBottom: '1px solid #e8e8e8',
+                        }}
+                      />
                       <FileView owner={owner} name={name} />
                       {/* <div>Size: {prettyBytes(repository.diskUsage)}</div> */}
-                      <If condition={repository.object !== null}>
-                        <ReactMarkdown source={repository.object !== null ? repository.object.text : ''} />
-                      </If>
-                      <If condition={repository.object === null}>
-                        No ReadMe Found
-                      </If>
-                      <div>Languages:</div>
-                      {repository.languages.nodes.map(language => (
-                        <Tag key={language.name} color={language.color}>
-                          {language.name}
-                        </Tag>
-                      ))}
+                      <div className="readme-section">
+                        <If condition={repository.object !== null}>
+                          <ReactMarkdown
+                            source={
+                              repository.object !== null
+                                ? repository.object.text
+                                : ''
+                            }
+                          />
+                        </If>
+                        <If condition={repository.object === null}>
+                          No ReadMe Found
+                        </If>
+                      </div>
                       {repository.languages.nodes.length === 0 && (
                         <Tag>No Languages Detected</Tag>
                       )}
