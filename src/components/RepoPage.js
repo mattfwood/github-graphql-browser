@@ -11,8 +11,12 @@ import {
   Input,
   Row,
   Col,
+  Icon,
 } from 'antd';
 import { Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import If from './If';
+import FileView from './FileView';
 
 const { Header, Content, Footer } = Layout;
 
@@ -20,6 +24,12 @@ const REPO_DETAILS = gql`
   query repository($name: String!, $owner: String!) {
     repository(name: $name, owner: $owner) {
       name
+      url
+      object(expression: "master:readme.md") {
+        ... on Blob {
+          text
+        }
+      }
       defaultBranchRef {
         id
       }
@@ -49,7 +59,7 @@ class RepoPage extends Component {
         </Header>
         <Content style={{ padding: '25px 50px' }}>
           <Row type="flex" justify="center">
-            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+            <Col xs={{ span: 24 }} lg={{ span: 18 }}>
               <Query query={REPO_DETAILS} variables={{ name, owner }}>
                 {({ loading, error, data }) => {
                   if (error) return <p>Error :(</p>;
@@ -57,12 +67,28 @@ class RepoPage extends Component {
                   const { repository } = data;
                   console.log(repository);
                   return (
-                    // <div>
-                    //   <div>Stars: {repository.stargazers.totalCount}</div>
-                    // </div>
-                    <Card title={repository.name.replace(/-/g, ' ')}>
+                    <Card
+                      title={
+                        <a target="_blank" href={repository.url}>
+                          {repository.name.replace(/-/g, ' ')}
+                        </a>
+                      }
+                      extra={
+                        <div>
+                          <Icon type="star" />{' '}
+                          {repository.stargazers.totalCount}
+                        </div>
+                      }
+                    >
                       <div>{repository.description}</div>
+                      <FileView owner={owner} name={name} />
                       {/* <div>Size: {prettyBytes(repository.diskUsage)}</div> */}
+                      <If condition={repository.object !== null}>
+                        <ReactMarkdown source={repository.object !== null ? repository.object.text : ''} />
+                      </If>
+                      <If condition={repository.object === null}>
+                        No ReadMe Found
+                      </If>
                       <div>Languages:</div>
                       {repository.languages.nodes.map(language => (
                         <Tag key={language.name} color={language.color}>
