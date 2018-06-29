@@ -38,10 +38,10 @@ ReactDOM.render(
     <Router>
       <Switch>
         <Route exact path="/" component={App} />
-        <Route path={`/:owner/:name`} component={RepoPage} />
+        <Route path="/:owner/:name" component={RepoPage} />
       </Switch>
     </Router>
   </ApolloProvider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
 registerServiceWorker();
