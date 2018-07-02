@@ -60,9 +60,9 @@ class App extends Component {
             <Link to="/">Github Browser</Link>
           </div>
         </Header>
-        <Content style={{ padding: '25px 50px' }}>
+        <Content style={{ padding: '25px' }}>
           <Row type="flex" justify="center">
-            <Col xs={{ span: 12 }} lg={{ span: 6 }}>
+            <Col xs={{ span: 24 }} lg={{ span: 12 }}>
               <Search
                 defaultValue="WesBos"
                 placeholder="Github Username"
@@ -81,7 +81,7 @@ class App extends Component {
               if (loading)
                 return (
                   <List
-                    grid={{ gutter: 16, column: 3 }}
+                    grid={{ gutter: 16, xs: 1, sm: 2, md: 4 }}
                     dataSource={[1, 2, 3, 4, 5, 6]}
                     renderItem={item => (
                       <List.Item key={item}>
@@ -95,7 +95,7 @@ class App extends Component {
 
               return (
                 <List
-                  grid={{ gutter: 16, column: 3 }}
+                  grid={{ gutter: 16, xs: 1, sm: 2, md: 4 }}
                   dataSource={repos}
                   renderItem={repo => (
                     <List.Item key={repo.id}>

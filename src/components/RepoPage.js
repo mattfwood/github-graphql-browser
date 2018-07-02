@@ -26,9 +26,17 @@ const REPO_DETAILS = gql`
       name
       url
       description
-      object(expression: "master:readme.md") {
-        ... on Blob {
-          text
+      object(expression: "master:") {
+        ... on Tree {
+          entries {
+            name
+            type
+            object {
+              ... on Blob {
+                text
+              }
+            }
+          }
         }
       }
       defaultBranchRef {
@@ -58,7 +66,7 @@ class RepoPage extends Component {
             <Link to="/">Github Browser</Link>
           </div>
         </Header>
-        <Content style={{ padding: '25px 50px' }}>
+        <Content style={{ paddingTop: 15 }}>
           <Row type="flex" justify="center">
             <Col xs={{ span: 24 }} lg={{ span: 18 }}>
               <Query query={REPO_DETAILS} variables={{ name, owner }}>
@@ -67,27 +75,32 @@ class RepoPage extends Component {
                   if (loading) return <Card loading={true} />;
 
                   const { repository } = data;
-                  console.log(repository);
+                  const repo = repository;
+                  console.log(repo);
+
+                  const readMe = repo.object.entries.find(file => {
+                    return file.name.toLowerCase().includes('readme');
+                  });
+
                   return (
                     <Card
                       title={
-                        <a target="_blank" href={repository.url}>
-                          {repository.name.replace(/-/g, ' ')}
+                        <a target="_blank" href={repo.url}>
+                          {repo.name.replace(/-/g, ' ')}
                         </a>
                       }
                       extra={
                         <div>
-                          <Icon type="star" />{' '}
-                          {repository.stargazers.totalCount}
+                          <Icon type="star" /> {repo.stargazers.totalCount}
                         </div>
                       }
                     >
                       <Card.Meta
                         description={
                           <div>
-                            <div>{repository.description}</div>
+                            <div>{repo.description}</div>
                             <div style={{ marginTop: 10 }}>
-                              {repository.languages.nodes.map(language => (
+                              {repo.languages.nodes.map(language => (
                                 <Tag key={language.name} color={language.color}>
                                   {language.name}
                                 </Tag>
@@ -98,26 +111,22 @@ class RepoPage extends Component {
                         style={{
                           marginBottom: 12,
                           paddingBottom: 12,
-                          // borderBottom: '1px solid #e8e8e8',
                         }}
                       />
-                      <FileView owner={owner} name={name} />
-                      {/* <div>Size: {prettyBytes(repository.diskUsage)}</div> */}
+                      <FileView files={repo.object.entries} />
                       <div className="readme-section">
-                        <If condition={repository.object !== null}>
+                        <If condition={repo.object !== null}>
                           <ReactMarkdown
                             source={
-                              repository.object !== null
-                                ? repository.object.text
-                                : ''
+                              readMe.object.text || ''
                             }
                           />
                         </If>
-                        <If condition={repository.object === null}>
+                        <If condition={repo.object === null}>
                           No ReadMe Found
                         </If>
                       </div>
-                      {repository.languages.nodes.length === 0 && (
+                      {repo.languages.nodes.length === 0 && (
                         <Tag>No Languages Detected</Tag>
                       )}
                     </Card>
